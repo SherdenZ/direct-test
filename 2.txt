@@ -1,0 +1,40 @@
+static int Func1(KeyValuePair<int, string>[] a, int low, int high, int key)  // Объявление функции и передача параметров - не явное имя массива "а" и функции Func1
+{
+    int middle = low + ((high - low) / 2); // вычислить среднее значение модно упростить - int middle = (hight + low) / 2;
+
+    if (low == high)  //если переданные параметры равны вывести low
+        return low;
+
+    if (key > a[middle].Key)  //если переданный парамтер key  больше значения ключа находящегося в середине массива "a"
+        return Func1(a, middle + 1, high, key); //вызвать функцию Func1 где параметр low = middle + 1
+
+    return Func1(a, low, middle, key); //вызвать функцию Func1 где параметр high = middle
+}
+
+static void Func2(ref KeyValuePair<int, string>[] a, int key, string value) // // Объявление функции и передача параметров - не явное имя массива "а" и функции Func2
+{
+    int pos;
+    KeyValuePair<int, string> keyValuePair; 
+
+    if (a.Length == 0) // если количество значений массива == 0
+    {
+        Array.Resize(ref a, 1); // увеличить размер массива на 1
+        keyValuePair = new KeyValuePair<int, string>(key, value);
+        a[0] = keyValuePair; // первое значение массива по индексу 0  = keyValuePair
+        return;
+    }
+
+    if (key < a[0].Key) //если параметр key меньше значения ключа по индексу 0 массива "а" то начанльная позиция 0
+        pos = 0; 
+    else if (key > a[a.Length - 1].Key) //если если параметр keyбольше значения ключа по индексу = количество элементов - 1 массива "а" то начанльная позиция  = количество элементов
+        pos = a.Length;
+    else //иначе pos равен результату Func1 где low = 0, high = количество элементов массива
+        pos = Func1(a, 0, a.Length - 1, key);
+
+    Array.Resize(ref a, a.Length + 1); // увеличить размер массива на количество элементов + 1
+    for (int i = a.Length - 1; i > pos; i--) //для i = количество элементов - 1; пока i > pos ; i = i-1 
+        a[i] = a[i - 1]; //значение по индексу i перемещаем на индекс i-1
+
+    keyValuePair = new KeyValuePair<int, string>(key, value);
+    a[pos] = keyValuePair;
+}
